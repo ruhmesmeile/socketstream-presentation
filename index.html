@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>SocketStream & Node.js for interactive single page apps by Jonas Ulrich</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <script>
+      // If the query includes 'print-pdf' we'll use the PDF print sheet
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="state-background"></div>
+
+      <div class="slides">
+        <section>
+          <h1>SocketStream & Node.js</h1>
+          <h3>for interactive single page apps</h3>
+        </section>
+
+        <section>
+          <h2>About me</h2>
+
+          <ul>
+            <li class="fragment">Lead developer at <a href="http://twitter.com/ruhmesmeile">@ruhmesmeile</a></li>
+            <li class="fragment">HTML / CSS / JavaScript enthusiast</li>
+            <li class="fragment">Began using Node.js & Server-side<br />JavaScript about 1 1/2 years ago</li>
+            <li class="fragment">Currently ~2-3 apps in production</li>
+            <li class="fragment"><a href="http://soundcloud.com/tsnm">DJ & and music nerd</a> in general</li>
+          </ul>
+
+          <p class="fragment">
+            <i><small>- <a href="mailto:jonas.ulrich@ruhmesmeile.com">Jonas Ulrich</a> / <a href="http://twitter.com/tsnmp">@tsnmp</a></small></i>
+          </p>
+        </section>
+
+        <section>
+          <h2>WebSockets</h2>
+          <ul>
+            <li class="fragment">Bi-directional, full-duplex communication<br />over single TCP connection</li>
+            <li class="fragment">Best suited for live content and real-time games</li>
+            <li class="fragment">Initial handshake through HTTP Upgrade request</li>
+            <li class="fragment">Connection kept open</li>
+            <li class="fragment">No further HTTP-overhead per message</li>
+            <li class="fragment">Unsolicited server-to-client communication</li>
+          </ul>
+
+          <p class="fragment">
+            Further information at the <a href="https://developer.mozilla.org/en-US/docs/WebSockets">Mozilla Developer Network</a> or <a href="http://tools.ietf.org/html/rfc6455">the official RFCs</a>.
+          </p>
+        </section>
+
+        <section>
+          <section>
+            <h2>SocketStream</h2>
+            <h5 style="margin-top: -0.5em;">Current version 0.31, MIT licensed</h5>
+            <blockquote class="fragment" cite="https://github.com/socketstream/socketstream#socketstream">
+              SocketStream is a modular Node.js web framework for building fast, responsive <strong>single-page realtime apps</strong>.
+            </blockquote>
+
+            <p class="fragment" style="margin-top: 1em;">
+              <small><q cite="https://github.com/socketstream/socketstream#socketstream">
+              It provides the structure and basic building blocks you need to create rich social/chat apps, multiplayer games, trading platforms, sales dashboards, or any other kind of web app that needs to display realtime streaming data.</q></small>
+            </p>
+
+            <p class="fragment" style="margin-top: 1em;">
+              <small>
+                Twitter: <a href="http://twitter.com/socketstream">@socketstream</a><br />
+                Google Group: <a href="http://groups.google.com/group/socketstream">http://groups.google.com/group/socketstream</a><br />
+                IRC channel: #socketstream on freenode<br /><br />
+
+                Created by Owen Barnes (<a href="https://github.com/owenb">GitHub</a>)
+              </small>
+            </p>
+          </section>
+
+          <section>
+            <h2>Motivation</h2>
+            <h4>Why use it?</h4>
+            <ul>
+              <li class="fragment">Sane structure for client & server</li>
+              <li class="fragment">Sensible defaults (Think Rails convention<br />over configuration)</li>
+              <li class="fragment">Live Reload while developing</li>
+              <li class="fragment">Asset packing and CDN support</li>
+              <li class="fragment">Modular client-side JavaScript</li>
+              <li class="fragment">Integrates well with popular client-side<br />frameworks (e.g. Backbone, Ember, Angular)</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Features</h2>
+            <h4>Server</h4>
+            <uL>
+              <li class="fragment">Modular WebSocket transports (<a href="http://socket.io/">Socket.IO</a> / <a href="https://github.com/sockjs">SockJS</a>)</li>
+              <li class="fragment">Shared code between client and server</li>
+              <li class="fragment">Request middleware support</li>
+              <li class="fragment">Scalable pub/sub built-in</li>
+              <li class="fragment">Authentication support (using <a href="http://everyauth.com/">Everyauth</a>)</li>
+              <li class="fragment">Integrates with <a href="http://www.senchalabs.org/connect/">Connect 2.0</a> and <a href="http://redis.io/">Redis</a> (optional)</li>
+            </ul>
+
+            <small class="fragment">
+              <p>
+                Optional modules (officially maintained and supported):<br />
+                <a href="https://github.com/socketstream/ss-sockjs">ss-sockjs</a>, <a href="https://github.com/socketstream/ss-console">ss-console</a>, <a href="https://github.com/socketstream/ss-coffee">ss-coffee</a>, <a href="https://github.com/socketstream/ss-jade">ss-jade</a>, <a href="https://github.com/socketstream/ss-stylus">ss-stylus</a>, <a href="https://github.com/socketstream/ss-less">ss-less</a>, <a href="https://github.com/socketstream/ss-hogan">ss-hogan</a>, <a href="https://github.com/socketstream/ss-coffeekup">ss-coffeekup</a>
+              </p>
+            </small>
+          </section>
+
+          <section>
+            <h2>Features</h2>
+            <h4>Client</h4>
+            <ul>
+              <li class="fragment">Use <code>require()</code> and <code>exports</code> on the client</li>
+              <li class="fragment">Package and minify all client-side assets</li>
+              <li class="fragment">Support for multiple client-side templating-engines<br />(<a href="http://twitter.github.com/hogan.js/">Hogan</a>/<a href="http://mustache.github.com/">Mustache</a>/<a href="http://coffeekup.org/">CoffeeKup</a>/<a href="http://jquery.com/">jQuery</a>/etc)</li>
+              <li class="fragment">Optional code formatters<br />(<a href="http://coffeescript.org/">CoffeeScript</a>/<a href="http://jade-lang.com/">Jade</a>/<a href="http://learnboost.github.com/stylus/">Stylus</a>/<a href="http://lesscss.org/">Less</a>/etc)</li>
+              <li class="fragment">Bundled with <a href="http://jquery.com/">jQuery</a>, but easily replaceable with <a href="http://zeptojs.com/">Zepto</a> or others</li>
+              <li class="fragment">Integrates well with other libraries, too (e.g. <a href="http://underscorejs.org/">Underscore</a>)</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <h2>Demo</h2>
+          <p>
+            <img src="images/image.png"/>
+          </p>
+        </section>
+
+        <section>
+          <section>
+            <h2>How to use it</h2>
+            <h4>code examples based on our app</h4>
+
+            <p>
+              <div class="fragment">
+                <small>Install SocketStream (prerequesites: <a href="https://npmjs.org">npm</a> & <a href="http://nodejs.org">Node 0.8.x</a>):</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable>[sudo] npm install -g socketstream</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Create a new project:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable>socketstream new &lt;name_of_your_project&gt;</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Install dependencies:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable>cd &lt;name_of_your_project&gt;
+[sudo] npm install</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Start the app:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable>node app.js</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Point your browser at:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable>http://localhost:3000</code></pre>
+              </div>
+            </p>
+          </section>
+
+          <section>
+            <h2>Server structure</h2>
+            <ul class="square">
+              <li>client/</li>
+              <li>
+                server/
+                <ul>
+                  <li class="fragment">
+                    assets/ <small>- general assets needed on the server</small>
+                    <ul>
+                      <li>images/</li>
+                      <li>fonts/</li>
+                      <li>data/</li>
+                      <li>...</li>
+                    </ul>
+                  </li>
+                  <li class="fragment">
+                    middleware/ <small>- custom / additional middleware</small>
+                    <ul>
+                      <li>facebookAuth.js</li>
+                      <li>zipStream.js</li>
+                    </ul>
+                  </li>
+                  <li class="fragment">
+                    rpc/ <small>- RPC endpoints</small>
+                    <ul>
+                      <li>board.js</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>app.js</ls>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Client structure</h2>
+            <ul class="square">
+              <li>
+                client/
+                <ul>
+                  <li class="fragment">
+                    code/ <small>- client-side JavaScript code</small>
+                    <ul>
+                      <li>app/ <small>- main client & entry point</small></li>
+                      <li>libs/ <small>- legacy (read: non common.js) libraries</small></li>
+                      <li>system/ <small>- system modules</small></li>
+                    </ul>
+                  </li>
+                  <li class="fragment">css/ <small>- CSS files</small></li>
+                  <li class="fragment">static/ <small>- static assets</small></li>
+                  <li class="fragment">
+                    templates/ <small>- templates in configured templating language</small>
+                    <ul>
+                      <li>fileupload.html</li>
+                      <li>userdetails.html</li>
+                    </ul>
+                  </li>
+                  <li class="fragment">
+                    views/ <small>- main views / layouts</small>
+                    <ul>
+                      <li>app.html</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>server/</li>
+              <li>app.js</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Adding your modules</h2>
+            <h4>before starting the server in app.js</h4>
+            <p>
+              <div class="fragment">
+                <small>Session storage:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">ss.session.store.use('redis', config.db);</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Server-side transport:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">ss.publish.transport.use('redis');</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Templating engine:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">ss.client.templateEngine.use(require('ss-hogan'));</code></pre>
+              </div>
+              <div class="fragment">
+                <small>WebSocket transport:</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">ss.ws.transport.use(require('ss-sockjs'));</code></pre>
+              </div>
+              <div class="fragment">
+                <small>Additional middleware (e.g. <code>bodyParser()</code>):</small>
+                <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">ss.http.middleware.prepend(ss.http.connect.bodyParser());</code></pre>
+              </div>
+            </p>
+          </section>
+
+          <section>
+            <h2>Defining Clients</h2>
+            <p>
+              <div class="fragment">
+                Register views, libraries, and files:
+                <pre><code contenteditable class="javascript">// Define a single-page client called 'main'
+ss.client.define('main', {
+  view: 'app.html',
+  css:  ['app.css'],
+  code: ['libs/jquery.min.js', 'app', 'system'],
+  tmpl: '*'
+});</code></pre>
+              </div>
+              <div class="fragment">
+                and add the routing:
+                <pre><code>// Serve main client on the root URL
+ss.http.route('/', function (req, res) {
+  res.serveClient('main');
+});</code></pre>
+              </div>
+            </p>
+          </section>
+
+          <section>
+            <h2>Starting the server</h2>
+            <h4>in app.js</h4>
+
+            <pre style="margin-top: -0.5em; margin-bottom: 0.8em;"><code contenteditable class="javascript">// Start web server
+var server = https.createServer(options, ss.http.middleware);
+server.listen(443);
+
+// Start SocketStream
+ss.start(server);</code></pre>
+          </section>
+
+          <section>
+            <h2>Bootstrap the client</h2>
+            <h4>in client/code/app/entry.js</h4>
+            <p>
+              <div class="fragment">
+                <pre><code contenteditable class="javascript">// Make 'ss' available to all modules and the browser console
+window.ss = require('socketstream');</code></pre>
+              </div>
+              <div class="fragment">
+                <pre><code contenteditable class="javascript">// Add handling for disconnect-events
+ss.server.on('disconnect', function () {
+  console.log('connection is down');
+});</code></pre>
+              </div>
+              <div class="fragment">
+                <pre><code contenteditable class="javascript">// Add handling for reconnect-events
+ss.server.on('reconnect', function () {
+  console.log('connection is back up');
+});</code></pre>
+              </div>
+              <div class="fragment">
+                <pre><code contenteditable class="javascript">// Initialize app when server signals ready
+ss.server.on('ready', function () {
+  // Wait for DOM to load
+  jQuery(function () {
+    require('/app').init();
+  });
+};</code></pre>
+              </div>
+            </p>
+          </section>
+
+          <section>
+            <h2>Making RPC calls</h2>
+            <h4>from the client</h4>
+
+            <div class="fragment">
+              <small>Client-side RPC-call initiation (<code>client/code/app/app.js</code>)</small>
+              <pre style="margin-top: -0.5em;"><code contenteditable class="javascript">// Called from entry.js, single initialization point
+exports.init = function () {
+  // Get current board from server
+  ss.rpc('board.current', initializeBoard);
+};</code></pre>
+            </div>
+
+            <div class="fragment">
+              <small>Server-side RPC-call interception (<code>server/rpc/board.js</code>)</small>
+              <pre style="margin-top: -0.5em; margin-bottom: 0;"><code contenteditable class="javascript">// Actions accessible through client/rpc (e.g. 'board.current'
+// where current is the action & board the controller)
+exports.actions = function(req, res, socketstream) {
+  return {
+    current: function () {
+      res(null, calculatedResult);
+    },
+    // Calls can take arbitrary number of arguments
+    get: function (boardId) { ... }
+  }
+}</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Broadcasting to Clients</h2>
+            <h4>from the server</h4>
+            <div class="fragment">
+              <small>Server-side broadcast (<code>server/rpc/board.js</code>)</small>
+              <pre style="margin-top: -0.5em;"><code contenteditable class="javascript">var notifyUsers = function (user, callback) {
+  // Publish a message to all connected clients
+  ss.publish.all('newUser', user);
+};</code></pre>
+            </div>
+
+            <div class="fragment">
+              <small>Client-side RPC-call initiation (<code>client/code/app/app.js</code>)</small>
+              <pre style="margin-top: -0.5em;"><code contenteditable class="javascript">ss.event.on('newUser', function (user) {
+  // Handle the new user
+});</code></pre>
+            </div>
+
+            <div class="fragment">
+              <small>Alternatively you can use channels, too</small>
+              <pre style="margin-top: -0.5em;"><code contenteditable class="javascript">// Register for channel boardUpdates
+req.session.channel.subscribe('boardUpdates')
+// Publish a message to that channel
+ss.publish.channel('boardUpdates', 'update', user);
+// Handle that message on the client
+ss.event.on('update', function(user, channelName){ ... });</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Exposing modules to SS</h2>
+            <div class="fragment">
+              To share modules / state over multiple open Socket connections, just add them to the SocketStream-API.
+              <small style="margin-top: 1em;">This is done in <code>app.js</code>, before starting the server</small>
+              <pre style="margin-top: 0.3em;"><code contenteditable class="javascript">// Add database connection to the SS.api
+ss.api.add('db', client);
+// Add enviroment const to the SS.api
+ss.api.add('enviroment', env);</code></pre>
+            </div>
+
+            <div class="fragment">
+              <small>The API is accessible in every RPC-call (<code>server/rpc/board.js</code>)</small>
+              <pre style="margin-top: -0.5em;"><code contenteditable class="javascript">// Access the database
+ss.db.get('boards:'+boardId+':positions:'+position,
+  function (err, userId) { ... }
+);
+
+// Or access the environment
+if (ss.environment === "production") { ... }</code></pre>
+            </div>
+          </section>
+
+          <section>
+            <h2>Session Management</h2>
+            <p>
+              Sessions can be shared between the initial HTTP-request and the WebSocket-connection. For every RPC-call that should load session-data the following has to be added:
+
+              <pre class="fragment" style="margin-top: 0.3em;"><code contenteditable class="javascript">// Add ss-session middleware, so we have access to the
+// shared session (especially session.facebook,
+// set during initial http-request)
+exports.actions = function(req, res, socketstream) {
+  req.use('session');
+
+  return {
+    ...
+  }
+}</code></pre>
+            </p>
+          </section>
+
+          <section>
+            <h2>Production gotchas</h2>
+            <p>
+              <ul>
+                <li class="fragment"><code>ulimit</code> should be increased to a<br />
+                  reasonable value on the server, to allow<br />
+                  a high number of concurrent connections</li>
+                <li class="fragment">
+                  For Internet Explorer support, a P3P-header has<br />
+                  to be included in the first response in order<br />
+                  for sessions to work
+                  <pre class="fragment"><code contenteditable class="javascript">ss.http.route('/', function (req, res) {
+  res.setHeader('P3P', 'CP="IDC DSP ..."');
+  res.serveClient('main');
+});</code></pre>
+                </li>
+                <li class="fragment">Heroku doesn't currently support WebSockets</li>
+              </ul>
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <h2>SocketStream 0.4</h2>
+          Lessons learnt from 0.3 & built upon:
+
+          <ul>
+            <li class="fragment">New Stream API to <code>pipe()</code> news feeds / etc<br />over the websocket</li>
+            <li class="fragment">Improved Request Responder API</li>
+            <li class="fragment">Bundled with <a href="https://github.com/LearnBoost/engine.io">Engine.IO</a> by default<br />(replaces <a href="http://socket.io">Socket.IO</a>)</li>
+            <li class="fragment">Option to Gzip assets</li>
+            <li class="fragment">Server-side event bus</li>
+            <li class="fragment">Improved architecture, faster than 0.3</li>
+            <li class="fragment">Complete switch from CoffeeScript to JavaScript</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Thanks</h2>
+          <p class="fragment">
+            Any questions?
+          </p>
+          <p class="fragment">
+            <small>Slides were written using <a href="http://lab.hakim.se/reveal-js/">reveal.js</small></a>
+          </p>
+        </section>
+      </div>
+
+      <!-- The navigational controls UI -->
+      <aside class="controls">
+        <a class="left" href="#">&#x25C4;</a>
+        <a class="right" href="#">&#x25BA;</a>
+        <a class="up" href="#">&#x25B2;</a>
+        <a class="down" href="#">&#x25BC;</a>
+      </aside>
+
+      <!-- Presentation progress bar -->
+      <div class="progress"><span></span></div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+
+        theme: Reveal.getQueryHash().theme || 'default', // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/linear(2d)
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/highlight.js', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'lib/js/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'lib/js/data-markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '/socket.io/socket.io.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+          { src: 'plugin/speakernotes/client.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+        ]
+      });
+    </script>
+  </body>
+</html>
