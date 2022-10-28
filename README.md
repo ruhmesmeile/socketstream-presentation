@@ -2,4 +2,4 @@
 
 
 Held on 11.09.2012 on the cologne.js user meetup at CoWoCo cologne by Jonas Ulrich.
-Hosted version here: http://ruhmesmeile.github.com/socketstream-presentation/
+Hosted version here: http://ruhmesmeile.github.io/socketstream-presentation/
